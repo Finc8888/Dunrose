@@ -11,6 +11,30 @@
 // 9. Напишите функцию update_rectangle (); что наполняет ее value% (pic2)
 // 10. показать размер очереди на странице
 
+
+window.onload = get_data;
+
+function get_data(){
+	var url = "get_data.php?arr=";
+	var request = new XMLHttpRequest();
+	request.open("GET", url);
+	request.onload = ready_data;
+	request.send(null);
+	function ready_data(){
+		if(request.status ==200){
+			var response_json = request.responseText;
+			var jsonObject = JSON.parse(response_json);
+			var value = jsonObject.value;
+			var delay = jsonObject.delay;
+			var data1 = [value,delay];
+			var data = alert(data1);
+		}
+		return data;
+	}
+	return ready_data;
+}
+
+
 function init(){
 	// рисование прямоугольника
 	var X,Y,WIDTH,HEIGHT;
@@ -59,25 +83,8 @@ function update_rectangle (value=0){
 }
 update_rectangle();
 
-window.onload = get_data;
 
-function get_data(){
-	var url = "get_data.php";
-	var request = new XMLHttpRequest();
-	request.open("GET", url);
-	request.onload = ready_data;
-	request.send(null);
-	function ready_data(){
-		if(request.status ==200){
-			var jsonObject = JSON.parse(request.responseText);
-			var value = jsonObject.value;
-			var delay = jsonObject.delay;
-			var data = [value,delay];
-		}
-		return data;
-	}
-	return ready_data;
-}
+
 
 
 
