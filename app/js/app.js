@@ -12,10 +12,48 @@
 // 10. показать размер очереди на странице
 
 
-window.onload = get_data;
+function Queue() {
+    this._oldestIndex = 1;
+    this._newestIndex = 1;
+    this._storage = {};
+}
+ 
+Queue.prototype.size = function() {
+    return this._newestIndex - this._oldestIndex;
+};
+ 
+Queue.prototype.enqueue = function(data) {
+    this._storage[this._newestIndex] = data;
+    this._newestIndex++;
+};
+ 
+Queue.prototype.dequeue = function() {
+    var oldestIndex = this._oldestIndex,
+        newestIndex = this._newestIndex,
+        deletedData;
+ 
+    if (oldestIndex !== newestIndex) {
+        deletedData = this._storage[oldestIndex];
+        delete this._storage[oldestIndex];
+        this._oldestIndex++;
+ 
+        return deletedData;
+    }
+};
 
+
+function queue(){
+}
+
+
+
+
+
+
+window.onload = get_data;
+setInterval(get_data, 5000)
 function get_data(){
-	var url = "get_data.php?arr=";
+	var url = "get_data.php";
 	var request = new XMLHttpRequest();
 	request.open("GET", url);
 	request.onload = ready_data;
@@ -26,14 +64,48 @@ function get_data(){
 			var jsonObject = JSON.parse(response_json);
 			var value = jsonObject.value;
 			var delay = jsonObject.delay;
-			var data1 = [value,delay];
-			var data = alert(data1);
-		}
+			var data = [value,delay];
+			var value = data[0];
+			ready_data.value = value;
+			var delay = data[1];
+
+
+
+
+			queueResponse = new Queue();
+			queueResponse.enqueue(value);
+
+			setTimeout(queueDelay, delay);
+			function queueDelay(){
+				
+				// рисование текста
+				canvas = document.getElementById('canvas');
+				var c = canvas.getContext('2d');
+				c.fillStyle = "black";
+				c.font = "italic "+14+"pt Arial ";
+				c.fillText(value +"%", 320,300);
+				// рисование текста
+				c.fillStyle = "black";
+				c.font = "italic "+14+"pt Arial ";
+				c.fillText(String(queueResponse.size() +": размер очереди "), 150,140);
+				update_rectangle(value);
+				queueResponse.dequeue()}
+			
+
+
+			}
+			else{
+				alert('При обращении к серверу возникли проблемы:' + xmlHttp.statusText);
+			}
+	
+
 		return data;
 	}
+
 	return ready_data;
 }
 
+// 
 
 function init(){
 	// рисование прямоугольника
@@ -64,6 +136,11 @@ function init(){
 	c.fillStyle = "black";
 	c.font = "italic "+66+"pt Arial ";
 	c.fillText("</canvas>", 20,590);}
+
+
+
+
+
 init();
 
 function update_rectangle (value=0){
@@ -71,6 +148,7 @@ function update_rectangle (value=0){
 	var y_update = init.y + init.height;
 	var width_update = init.width;
 	var height_update = -(init.height * value)/100;
+	// alert(y_update + ',' + height_update)
 
 	canvas = document.getElementById('canvas');
 	var c = canvas.getContext('2d');
@@ -80,10 +158,19 @@ function update_rectangle (value=0){
 	c.strokeStyle = "#5c2020";
 	c.lineWidth=5;
 	c.strokeRect(x_update,y_update,width_update,height_update);
+	var x_clear = init.x;
+	var y_clear = init.y;
+	var width_clear = init.width;
+	var height_clear = init.height + height_update ;
+	c.fillStyle = "white";
+	c.fillRect(x_clear,y_clear,width_clear,height_clear);
+	c.strokeStyle = "#5c2020";
+	c.lineWidth=5;
+	c.strokeRect(x_clear,y_clear,width_clear,height_clear);
+
+
 }
-update_rectangle();
-
-
+// update_rectangle(value);
 
 
 
