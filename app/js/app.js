@@ -56,9 +56,117 @@ function update_rectangle (value=0){
 	c.strokeStyle = "#5c2020";
 	c.lineWidth=5;
 	c.strokeRect(x_update,y_update,width_update,height_update);
-
 }
 update_rectangle();
+
+window.onload = get_data;
+
+function get_data(){
+	var url = "get_data.php";
+	var request = new XMLHttpRequest();
+	request.open("GET", url);
+	request.onload = ready_data;
+	request.send(null);
+	function ready_data(){
+		if(request.status ==200){
+			var jsonObject = JSON.parse(request.responseText);
+			var value = jsonObject.value;
+			var delay = jsonObject.delay;
+			var data = [value,delay];
+		}
+		return data;
+	}
+	return ready_data;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// //Запомнить ссылку на объект XMLHttpRequest
+// var xmlHttp = createXMLHttpObject();
+// //Создать объект XMLHttpRequest
+// function createXMLHttpObject()
+// {
+// try
+// 	{
+// 		xmlHttp = new XMLHttpRequest();
+// 	}
+// 	catch(e)
+// 	{
+// 		xmlHttp = false;
+// 	}
+// //Вернуть созданый объект или вынести сообщение об ошибке
+// if (!xmlHttp) 
+// 	alert('Ошибка создание объекта XMLHttpRequest.');
+// else
+// 	return xmlHttp;}
+
+
+// //выполнить ассинхронный запрос HTTP с помощью объекта XMLHttpRequest
+// function process()
+// {
+// 	//Работа возможна только если объект xmlHttp не занят
+// 	if (xmlHttp.readyState == 4 | xmlHttp.readyState == 0)
+// 	{
+// 		//получить имя введенное пользователем в форму
+// 		name = encodeURIComponent(document.getElementById('myName').value);
+// 		//обратиться к сценарию quickstart.php на сервере
+// 		xmlHttp.open("GET", "quickstart.php?name=" + name, false);
+// 		//определить метод, который обрабатывает ответы сервера
+// 		xmlHttp.onreadystatechange = handleServerResponse;
+// 		//послать ассинхронный запрос серверу
+// 		xmlHttp.send(null);
+// 	}
+// 	else
+// 		//если соединение занято повторить попытку через секунду
+// 	setTimeout('process()', 1000);
+// }
+// //вызывется автоматически по прибытии сообщения от сервера
+// function handleServerResponse()
+// {
+// 	//продолжать можно только если транзакция с сервером завершена
+// 	if (xmlHttp.readyState == 4) {
+// 		//значение 200 говорит о том, что транзакция произошла успешно
+// 		if (xmlHttp.status == 200) {
+// 			//извлечь XML, полученный от сервера
+// 			xmlResponse = xmlHttp.responseXML;
+// 			//получить корневой элемент в структуре XML
+// 			xmlDocumentElement = xmlResponse.documentElement;
+// 			//извлечь текстовое сообщение, которое находиться в первом
+// 			//дочернем элементе корневого узла
+// 			helloMessage = xmlDocumentElement.firstChild.data;
+// 			//обновить текст сообщения на экране
+// 			document.getElementById("divMessage").innerHTML =
+// 					'<i>' + helloMessage + '</i>';
+// 			//повторить последовательность действий
+// 			setTimeout('process()', 1000)
+// 		}
+// 		//код статуса HTTP, отличный от 200, говорит о наличии ошибки
+// 		else
+// 		{
+// 			alert('При обращении к серверу возникли проблемы:' +
+// 						xmlHttp.statusText);
+// 		}
+	
+	
+
+
+
 
 
 
