@@ -42,12 +42,13 @@ Queue.prototype.dequeue = function() {
 };
 
 
-function queue(){
-}
+// function queue(){
+// }
 
 
 
-
+{let value, delay;
+queueResponse = new Queue();
 
 
 window.onload = get_data;
@@ -61,35 +62,24 @@ function get_data(){
 	function ready_data(){
 		if(request.status ==200){
 			var response_json = request.responseText;
+
+			queueResponse.enqueue(response_json);
+			console.log(queueResponse.size());
+			text_canvas(String(queueResponse.size() +"  : размер очереди "),150,140,14);
+
 			var jsonObject = JSON.parse(response_json);
 			var value = jsonObject.value;
 			var delay = jsonObject.delay;
 			var data = [value,delay];
-			var value = data[0];
+			value = data[0];
 			ready_data.value = value;
-			var delay = data[1];
+			delay = data[1];
+			text_canvas(value +"%",320,300,14);
 
 
 
 
-			queueResponse = new Queue();
-			queueResponse.enqueue(value);
-
-			setTimeout(queueDelay, delay);
-			function queueDelay(){
-				
-				// рисование текста
-				canvas = document.getElementById('canvas');
-				var c = canvas.getContext('2d');
-				c.fillStyle = "black";
-				c.font = "italic "+14+"pt Arial ";
-				c.fillText(value +"%", 320,300);
-				// рисование текста
-				c.fillStyle = "black";
-				c.font = "italic "+14+"pt Arial ";
-				c.fillText(String(queueResponse.size() +": размер очереди "), 150,140);
-				update_rectangle(value);
-				queueResponse.dequeue()}
+			
 			
 
 
@@ -105,77 +95,76 @@ function get_data(){
 	return ready_data;
 }
 
-// 
 
-function init(){
+var X,Y,WIDTH,HEIGHT;
+	X = 150;
+	Y = 150;
+	WIDTH = 150;
+	HEIGHT = 300;
+
+function init(x,y,width,height,stroke = "#5c2020",fill = "white"){
 	// рисование прямоугольника
-	var X,Y,WIDTH,HEIGHT;
-	init.x = X = 150;
-	init.y = Y = 150;
-	init.width = WIDTH = 150;
-	init.height = HEIGHT = 300;
-
 	canvas = document.getElementById('canvas');
 	var c = canvas.getContext('2d');
-
-	c.strokeStyle = "#5c2020";
+	c.fillStyle = fill;
+	c.fillRect(x,y,width,height);
+	c.strokeStyle = stroke;
 	c.lineWidth=5;
-	c.strokeRect(X,Y,WIDTH,HEIGHT);
-
-	
-	
-
-	// рисование текста
-	c.fillStyle = "black";
-	c.font = "italic "+66+"pt Arial ";
-	c.fillText("<canvas>", 20,70);	
+	c.strokeRect(x,y,width,height);
+	console.log("Stop" +String(x+" ")+String(y+" ")+String(width+" ")+String(height)+" "+ stroke + fill)
+}
 
 
-
-	// рисование текста
-	c.fillStyle = "black";
-	c.font = "italic "+66+"pt Arial ";
-	c.fillText("</canvas>", 20,590);}
-
-
-
-
-
-init();
 
 function update_rectangle (value=0){
-	var x_update = init.x;
-	var y_update = init.y + init.height;
-	var width_update = init.width;
-	var height_update = -(init.height * value)/100;
-	// alert(y_update + ',' + height_update)
+	var x_update = X;
+	var y_update = Y + HEIGHT;
+	var width_update = WIDTH;
+	var height_update = -(HEIGHT * value)/100;
+	// console.log("Stop1")
+	init(x_update,y_update,width_update,height_update,"#5c2020","red");
+	
+	var x_clear = X;
+	var y_clear = Y;
+	var width_clear = WIDTH;
+	var height_clear = HEIGHT + height_update ;
+	// console.log("Stop2")
+	init(x_clear,y_clear,width_clear,height_clear);
+}
+
+
+// рисование текста Canvas
+function text_canvas(text,x,y,seize_font){
 
 	canvas = document.getElementById('canvas');
 	var c = canvas.getContext('2d');
+	c.clearRect(x, y-15, 400, 20); // Очистка области указанного размера и положения
+	c.fillStyle = "black";
+	c.font = "italic "+seize_font+"pt Arial ";
+	c.fillText(text, x,y);
 
-	c.fillStyle = "red";
-	c.fillRect(x_update,y_update,width_update,height_update);
-	c.strokeStyle = "#5c2020";
-	c.lineWidth=5;
-	c.strokeRect(x_update,y_update,width_update,height_update);
-	var x_clear = init.x;
-	var y_clear = init.y;
-	var width_clear = init.width;
-	var height_clear = init.height + height_update ;
-	c.fillStyle = "white";
-	c.fillRect(x_clear,y_clear,width_clear,height_clear);
-	c.strokeStyle = "#5c2020";
-	c.lineWidth=5;
-	c.strokeRect(x_clear,y_clear,width_clear,height_clear);
+}	
+
+init(X,Y,WIDTH,HEIGHT);
+// update_rectangle(100);
+
+
+
+// setTimeout(queueDelay, delay);
+// function queueDelay(){
+// 	// отображение размера очереди
+// 	text_canvas(value +"%",320,300,14);
+// 	text_canvas(String(queueResponse.size() +"  : размер очереди "),150,140,14);
+
+// 	update_rectangle(value);
+// 	queueResponse.dequeue()}
+
+
+text_canvas("<canvas>",20,70,66);
+text_canvas("</canvas>",20,590,66);
 
 
 }
-// update_rectangle(value);
-
-
-
-
-
 
 
 
@@ -262,6 +251,20 @@ function update_rectangle (value=0){
 
 
 
+// alert(y_update + ',' + height_update)
+
+	// canvas = document.getElementById('canvas');
+	// var c = canvas.getContext('2d');
+
+	// c.fillStyle = "red";
+	// c.fillRect(x_update,y_update,width_update,height_update);
+	// c.strokeStyle = "#5c2020";
+	// c.lineWidth=5;
+	// c.strokeRect(x_update,y_update,width_update,height_update);
 
 
-
+	// c.fillStyle = "white";
+	// c.fillRect(x_clear,y_clear,width_clear,height_clear);
+	// c.strokeStyle = "#5c2020";
+	// c.lineWidth=5;
+	// c.strokeRect(x_clear,y_clear,width_clear,height_clear);
