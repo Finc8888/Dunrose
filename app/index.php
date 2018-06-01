@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Base of painting</title>
+	<title>Домашнее задание</title>
 	
 </head>
 <body>
@@ -14,10 +14,5 @@
 <canvas width="800" height="600" id="canvas"></canvas>
 <script src = "js/app.js">  </script>
 
-
-
-
-
-	
 </body>
 </html>
