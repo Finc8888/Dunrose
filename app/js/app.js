@@ -45,15 +45,14 @@ WIDTH = 150;//ширина прямоугольника
 HEIGHT = 300;//высота прямоугольника
 REPEAT_REQUEST = 500;//переодичность отправки запроса на сервер
 
-var value, delay;
+
 var queueResponse = new Queue();
 
 window.onload = function(){
 	get_data;
 	init(X,Y,WIDTH,HEIGHT);
-	text_canvas("<canvas>",20,70,66);
-	text_canvas("</canvas>",20,590,66);
 	setInterval(get_data, REPEAT_REQUEST)
+	setInterval(queueDelay, 1000);
 }
 function get_data(){
 	var url = "get_data.php";
@@ -65,31 +64,27 @@ function get_data(){
 		if(request.status ==200){
 			var responseJSON = request.responseText;
 			//ставим ajax responce  в очередь
-			queueResponse.push(responseJSON);
-			//обработка запроса через время равное delay
-			setTimeout(queueDelay, delay);
-			function queueDelay(){
-				text_canvas(String(queueResponse.get_size() +"  : размер очереди "),150,140,14);
-				var item = queueResponse.pop();
-				// console.log(item);
-				var jsonObject = JSON.parse(item);
-				value = jsonObject.value;
-				delay = jsonObject.delay;
-				
-				update_rectangle(value);
-				text_canvas(value +"%",320,300,14);
-				
-				if(queueResponse.is_busy(100)){
-					console.log('Очередь переполнена');
-					alert('Очередь переполнена\n Рекомендуется увеличить константу REPEAT_REQUEST ');
-				}
-			}	
+			queueResponse.push(responseJSON);	
 		}
 			else{
 				alert('При обращении к серверу возникли проблемы:' + request.statusText);
 			}
 	}
 }
+//обработка запроса через время равное delay
+function queueDelay() {
+	var item;
+	text_canvas(String(queueResponse.get_size() +"  : размер очереди "),150,140,14);
+	if ((queueResponse.get_size()) && !queueResponse.is_busy(100)) {
+		var item = JSON.parse(queueResponse.pop());
+		update_rectangle(item.value);
+		text_canvas(item.value +"%",320,300,14);
+		setTimeout(queueDelay, item.delay);
+		return;
+	}
+}
+
+
 //метод вывода прямоугольника на экран
 function init(x,y,width,height,stroke = "#5c2020",fill = "white"){
 	var canvas = document.getElementById('canvas');
@@ -102,7 +97,7 @@ function init(x,y,width,height,stroke = "#5c2020",fill = "white"){
 	// console.log("Stop" +String(x+" ")+String(y+" ")+String(width+" ")+String(height)+" "+ stroke + fill)
 }
 //метод перерисовки прямоугольника в зависимости от величины %
-function update_rectangle (value=0){
+function update_rectangle (value){
 	var xUpdate = X;
 	var yUpdate = Y + HEIGHT;
 	var widthUpdate = WIDTH;
@@ -124,7 +119,8 @@ function text_canvas(text,x,y,seizeFont){
 	c.fillText(text, x,y);
 }	
 
-
+text_canvas("<canvas>",20,70,66);
+text_canvas("</canvas>",20,590,66);
 
 
 
