@@ -6,4 +6,3 @@ $arr = array('value' => $get_value, 'delay' => $get_delay);
 
 echo json_encode($arr);
 
-?>
